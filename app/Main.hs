@@ -13,7 +13,6 @@ import Network.Wai.Application.Static (staticApp, defaultFileServerSettings)
 
 import Control.Monad.IO.Class (liftIO)
 
--- Task data type
 data Task = Task
   { taskId    :: Int
   , title     :: String
@@ -23,19 +22,17 @@ data Task = Task
 instance ToJSON Task
 instance FromJSON Task
 
--- Input for adding a task
 data TaskInput = TaskInput { titleInput :: String } deriving (Generic)
 instance ToJSON TaskInput
 instance FromJSON TaskInput
 
--- API definition
 type TaskAPI =
        "tasks" :> Get '[JSON] [Task]                     -- GET /tasks
   :<|> "tasks" :> ReqBody '[JSON] TaskInput :> Post '[JSON] Task  -- POST /tasks
   :<|> "tasks" :> Capture "id" Int :> "complete" :> Post '[JSON] Task -- POST /tasks/:id/complete
 
 type API = TaskAPI
-      :<|> Raw  -- serve static frontend files
+      :<|> Raw 
 
 taskAPI :: Proxy TaskAPI
 taskAPI = Proxy
@@ -43,7 +40,6 @@ taskAPI = Proxy
 api :: Proxy API
 api = Proxy
 
--- Server implementation
 taskServer :: IORef [Task] -> Server TaskAPI
 taskServer tasksRef =
        getTasks

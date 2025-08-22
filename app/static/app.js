@@ -1,3 +1,4 @@
+
 async function fetchTasks() {
   const res = await fetch('/tasks');
   const tasks = await res.json();
